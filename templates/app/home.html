@@ -1,0 +1,61 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Homepage</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+    <header>
+        <div class="welcome">
+            Welcome, <span id="username">{{user.first_name|default:user.username}}</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Courses</a></li>
+                <li><button class="logout-btn">Log Out</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- HERO SECTION (Background Image) -->
+    <section class="hero">
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <h1>Get your <span class="highlight">Education</span> today!</h1>
+        </div>
+
+        <!-- Get Started Button (Moved to Bottom Line) -->
+        <div class="get-started">
+            <a href="#" class="get-started-btn">Get Started</a>
+        </div>
+    </section>
+
+    <!-- Floating Contact Button -->
+    <div class="contact-dot" onclick="toggleContactBox()">💬</div>
+
+    <!-- Contact & Queries Box -->
+    <div class="contact-box" id="contactBox">
+        <h2>Contact & Queries</h2>
+        <form>
+            <input type="text" placeholder="Your Name" required>
+            <input type="email" placeholder="Your Email" required>
+            <textarea placeholder="Your Message" required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        function toggleContactBox() {
+            const contactBox = document.getElementById('contactBox');
+            contactBox.classList.toggle('show');
+        }
+
+        
+    </script>
+</body>
+</html>
