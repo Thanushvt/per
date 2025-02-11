@@ -1,4 +1,5 @@
-{% load static%}
+{% load static %}
+{% load socialaccount %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,35 +11,36 @@
 <body>
     <header>
         <div class="welcome">
-            Welcome, <span id="username">{{user.first_name|default:user.username}}</span>
+            Welcome, <span id="username">{{ user.first_name|default:user.username }}</span>
         </div>
         <nav>
             <ul>
                 <li><a href="#">Home</a></li>
                 <li><a href="#">About Us</a></li>
                 <li><a href="#">Courses</a></li>
-                <li><button class="logout-btn">Log Out</button></li>
+                <li>
+                    <form action="{% url 'logout' %}" method="post" class="logout-btn">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-btn">Logout</button>
+                    </form>
+                </li>
             </ul>
         </nav>
     </header>
 
-    <!-- HERO SECTION (Background Image) -->
     <section class="hero">
         <div class="overlay"></div>
         <div class="hero-content">
             <h1>Get your <span class="highlight">Education</span> today!</h1>
         </div>
 
-        <!-- Get Started Button (Moved to Bottom Line) -->
         <div class="get-started">
             <a href="#" class="get-started-btn">Get Started</a>
         </div>
     </section>
 
-    <!-- Floating Contact Button -->
     <div class="contact-dot" onclick="toggleContactBox()">💬</div>
 
-    <!-- Contact & Queries Box -->
     <div class="contact-box" id="contactBox">
         <h2>Contact & Queries</h2>
         <form>
@@ -54,8 +56,6 @@
             const contactBox = document.getElementById('contactBox');
             contactBox.classList.toggle('show');
         }
-
-        
     </script>
 </body>
 </html>
