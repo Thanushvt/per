@@ -10,8 +10,11 @@
 </head>
 <body>
     <header>
-        <div class="welcome">
-            Welcome, <span id="username">{{ user.first_name|default:user.username }}</span>
+        <div class="profile-section">
+            <img src="{{profile.profile_picture|default:''}}" alt="Profile Picture" class="profile-pic">
+            <div class="welcome">
+                Welcome, <span id="username">{{ user.first_name|default:user.username }}</span>
+            </div>
         </div>
         <nav>
             <ul>
@@ -57,5 +60,6 @@
             contactBox.classList.toggle('show');
         }
     </script>
+    <a href="info.html" class="button">Go to Info Page</a>
 </body>
 </html>

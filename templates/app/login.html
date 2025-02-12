@@ -1,6 +1,6 @@
 {% load static %}
 {% load socialaccount %}
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,11 +8,10 @@
     <title>Login</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/material-icons@1.13.12/iconfont/material-icons.min.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="" >
 </head>
 <body>
+
     <nav class="navbar">
         <div class="container">
             <div class="row justify-content-between align-items-center">
@@ -32,48 +31,65 @@
             <div class="right">
                 <div class="form">
                     <div class="text-center">
-                        <h6><span>Log In</span> <span>Sign Up</span></h6>
+                        <h6>
+                            <span id="login-tab">Log In</span>
+                            <span id="signup-tab">Sign Up</span>
+                        </h6>
                         <input type="checkbox" class="checkbox" id="reg-log">
                         <label for="reg-log"></label>
                         <div class="card-3d-wrap">
                             <div class="card-3d-wrapper">
+                                <!-- LOGIN FORM -->
                                 <div class="card-front">
                                     <div class="center-wrap">
                                         <h4 class="heading">Log In</h4>
-                                        <div class="form-group">
-                                            <input type="email" class="form-style" placeholder="Your Email" autocomplete="off">
-                                            <i class="input-icon material-icons">alternate_email</i>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="password" class="form-style" placeholder="Your Password" autocomplete="off">
-                                            <i class="input-icon material-icons">lock</i>
-                                        </div>
-                                        <a href="#" class="btn">Submit</a>
+                                        <form method="POST" action="{% url 'login' %}">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <input type="text" name="username" class="form-style" placeholder="Your Username" required>
+                                                <i class="input-icon fa fa-user"></i>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="password" name="password" class="form-style" placeholder="Your Password" required>
+                                                <i class="input-icon fa fa-lock"></i>
+                                            </div>
+                                            <button type="submit" class="btn">Login</button>
+                                        </form>
                                         <p class="text-center">
                                             <a href="#" class="link">Forgot your password?</a>
                                         </p>
+                                        <!-- Social Login -->
                                         <div class="social-icons">
                                             <a href="{% provider_login_url 'google' %}"><i class="bx bxl-google"></i></a>
                                             <a href="{% provider_login_url 'github' %}"><i class="bx bxl-github"></i></a>
                                         </div>
                                     </div>
                                 </div>
+                                <!-- SIGNUP FORM -->
                                 <div class="card-back">
                                     <div class="center-wrap">
                                         <h4 class="heading">Sign Up</h4>
-                                        <div class="form-group">
-                                            <input type="text" class="form-style" placeholder="Your Name" autocomplete="off">
-                                            <i class="input-icon material-icons">perm_identity</i>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="email" class="form-style" placeholder="Your Email" autocomplete="off">
-                                            <i class="input-icon material-icons">alternate_email</i>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="password" class="form-style" placeholder="Your Password" autocomplete="off">
-                                            <i class="input-icon material-icons">lock</i>
-                                        </div>
-                                        <a href="#" class="btn">Submit</a>
+                                        <form method="POST" action="{% url 'signup' %}">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <input type="text" name="username" class="form-style" placeholder="Your Username" required>
+                                                <i class="input-icon fa fa-user"></i>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="email" name="email" class="form-style" placeholder="Your Email" required>
+                                                <i class="input-icon fa fa-envelope"></i>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="password" name="password" class="form-style" placeholder="Your Password" required>
+                                                <i class="input-icon fa fa-lock"></i>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="password" name="confirm_password" class="form-style" placeholder="Confirm Password" required>
+                                                <i class="input-icon fa fa-lock"></i>
+                                            </div>
+                                            <button type="submit" class="btn">Sign Up</button>
+                                        </form>
+                                        <!-- Social Login (Fixed) -->
                                         <div class="social-icons">
                                             <a href="{% provider_login_url 'google' %}"><i class="bx bxl-google"></i></a>
                                             <a href="{% provider_login_url 'github' %}"><i class="bx bxl-github"></i></a>
@@ -87,5 +103,6 @@
             </div>
         </div>
     </div>
+
 </body>
 </html>
