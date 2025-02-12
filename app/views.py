@@ -2,11 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.db import IntegrityError  # To handle unique constraint errors
-from .models import Profile
+from django.db import IntegrityError
+from .models import Profile, UserSelection
 from django.contrib.auth.decorators import login_required
 
-# Signup View
 def signup_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -34,10 +33,9 @@ def signup_view(request):
     return render(request, "app/signup.html")
 
 
-# Login View
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect("home")  # Redirect logged-in users to home
+        return redirect("home")
 
     if request.method == "POST":
         username = request.POST.get("username")
@@ -53,25 +51,36 @@ def login_view(request):
     return render(request, "app/login.html")
 
 
-# Logout View (Fixed)
 def logout_view(request):
     if request.user.is_authenticated:
         logout(request)
-        request.session.flush()  # Ensure session is cleared
+        request.session.flush()
         messages.success(request, "Logged out successfully.")
     
-    return redirect("login")  # Always redirect to login page
+    return redirect("login")
 
 
-# Home Page (Protected)
 @login_required
 def home(request):
     profile = Profile.objects.filter(user=request.user).first()
     return render(request, "app/home.html", {"user": request.user, "profile": profile})
 
 
+@login_required
 def info(request):
-    return render(request, 'app/info.html')
+    if request.method == "POST":
+        selected_courses = request.POST.getlist("courses")
+        selected_interests = request.POST.getlist("interests")
 
+        UserSelection.objects.update_or_create(
+            user=request.user,
+            defaults={
+                "selected_courses": ",".join(selected_courses),
+                "selected_interests": ",".join(selected_interests),
+            }
+        )
 
+        messages.success(request, "Your selections have been saved!")
+        return redirect("home")
 
+    return render(request, "app/info.html")

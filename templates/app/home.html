@@ -11,7 +11,7 @@
 <body>
     <header>
         <div class="profile-section">
-            <img src="{{profile.profile_picture|default:''}}" alt="Profile Picture" class="profile-pic">
+            <img src="{{ profile.profile_picture|default:'' }}" alt="Profile Picture" class="profile-pic">
             <div class="welcome">
                 Welcome, <span id="username">{{ user.first_name|default:user.username }}</span>
             </div>
@@ -38,28 +38,8 @@
         </div>
 
         <div class="get-started">
-            <a href="#" class="get-started-btn">Get Started</a>
+            <a href="{% url 'info' %}" class="get-started-btn">Get Started</a>
         </div>
     </section>
-
-    <div class="contact-dot" onclick="toggleContactBox()">💬</div>
-
-    <div class="contact-box" id="contactBox">
-        <h2>Contact & Queries</h2>
-        <form>
-            <input type="text" placeholder="Your Name" required>
-            <input type="email" placeholder="Your Email" required>
-            <textarea placeholder="Your Message" required></textarea>
-            <button type="submit">Submit</button>
-        </form>
-    </div>
-
-    <script>
-        function toggleContactBox() {
-            const contactBox = document.getElementById('contactBox');
-            contactBox.classList.toggle('show');
-        }
-    </script>
-    <a href="info.html" class="button">Go to Info Page</a>
 </body>
 </html>

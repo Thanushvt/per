@@ -18,3 +18,11 @@ class Profile(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+
+class UserSelection(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    selected_courses = models.TextField(blank=True, null=True)
+    selected_interests = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s Selections"

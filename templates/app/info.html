@@ -1,4 +1,4 @@
-{% load static%}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,40 +11,46 @@
     <header>
         <h1>Info</h1>
         <nav>
-            <a href="#">Home</a>
+            <a href="{% url 'home' %}">Home</a>
             <a href="#">About Us</a>
             <a href="#">Courses</a>
-            <button class="logout">Log Out</button>
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="logout">Log Out</button>
+            </form>
         </nav>
     </header>
     
     <main>
-        <div class="container">
-            <div class="section">
-                <h2>Previous Course</h2>
-                <div class="grid">
-                    <label><input type="checkbox"> Inter</label>
-                    <label><input type="checkbox"> Diploma</label>
-                    <label><input type="checkbox"> ITI</label>
-                    <label><input type="checkbox"> B TECH</label>
+        <form method="post">
+            {% csrf_token %}
+            <div class="container">
+                <div class="section">
+                    <h2>Previous Course</h2>
+                    <div class="grid">
+                        <label><input type="checkbox" name="courses" value="Inter"> Inter</label>
+                        <label><input type="checkbox" name="courses" value="Diploma"> Diploma</label>
+                        <label><input type="checkbox" name="courses" value="ITI"> ITI</label>
+                        <label><input type="checkbox" name="courses" value="B TECH"> B TECH</label>
+                    </div>
                 </div>
-            </div>
 
-            <div class="section">
-                <h2>Area Of Interest</h2>
-                <div class="grid">
-                    <label><input type="checkbox"> Computers</label>
-                    <label><input type="checkbox"> Medical</label>
-                    <label><input type="checkbox"> Agriculture</label>
-                    <label><input type="checkbox"> Bussiness</label>
-                    <label><input type="checkbox"> LAW</label>
-                    <label><input type="checkbox"> Govt jobs</label>
-                    <label><input type="checkbox"> Fashion Design</label>
-                    <label><input type="checkbox"> Non-IT</label>
+                <div class="section">
+                    <h2>Area Of Interest</h2>
+                    <div class="grid">
+                        <label><input type="checkbox" name="interests" value="Computers"> Computers</label>
+                        <label><input type="checkbox" name="interests" value="Medical"> Medical</label>
+                        <label><input type="checkbox" name="interests" value="Agriculture"> Agriculture</label>
+                        <label><input type="checkbox" name="interests" value="Business"> Business</label>
+                        <label><input type="checkbox" name="interests" value="Law"> Law</label>
+                        <label><input type="checkbox" name="interests" value="Govt jobs">Govt jobs</label>
+                        <label><input type="checkbox" name="interests" value="Fashiondesigning"> Fashiondesigning</label>
+                        <label><input type="checkbox" name="interests" value="Non-IT"> Non-IT</label>
+                    </div>
                 </div>
             </div>
-        </div>
-        <button class="submit">Submit</button>
+            <button type="submit" class="submit">Submit</button>
+        </form>
     </main>
 </body>
 </html>
