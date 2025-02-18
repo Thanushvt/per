@@ -3,8 +3,10 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db import IntegrityError
-from .models import Profile, UserSelection
 from django.contrib.auth.decorators import login_required
+from allauth.socialaccount.models import SocialAccount
+from .models import Profile, UserSelection
+
 
 def signup_view(request):
     if request.method == "POST":
@@ -23,6 +25,7 @@ def signup_view(request):
 
         try:
             user = User.objects.create_user(username=username, email=email, password=password)
+            Profile.objects.create(user=user)  # No need to set default here, handled in template
             messages.success(request, "Account created! Please log in.")
         except IntegrityError:
             messages.error(request, "An error occurred. Try again.")
@@ -62,8 +65,15 @@ def logout_view(request):
 
 @login_required
 def home(request):
-    profile = Profile.objects.filter(user=request.user).first()
-    return render(request, "app/home.html", {"user": request.user, "profile": profile})
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+
+    # Check for a social account picture
+    social_account = SocialAccount.objects.filter(user=request.user).first()
+    profile_picture = (
+        social_account.extra_data.get("picture") if social_account else profile.profile_picture
+    )
+
+    return render(request, "app/home.html", {"user": request.user, "profile_picture": profile_picture})
 
 
 @login_required

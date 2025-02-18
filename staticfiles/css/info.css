@@ -1,0 +1,117 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: url("/static/photo.jpg") no-repeat center center/cover;
+    color: black;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+header {
+    background: rgba(211, 211, 211, 0.5);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+nav {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    margin-left:70%; /* Aligns navigation properly */
+}
+
+nav a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.logout {
+    background: red;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    margin-left: auto;
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding-top: 150px;
+}
+
+.container {
+    display: flex;
+    justify-content: space-evenly;
+    height: 80%;
+    width: 150%;
+    max-width: 1200px;
+    gap: 100px; /* Increased space between sections */
+}
+
+.section {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 30px;
+    border-radius: 20px;
+    width: 45%;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    font-size: 20px;
+    border-radius: 10px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+label {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    font-size: 20px; /* Increased font size for better readability */
+    padding: 10px;
+}
+
+input[type="checkbox"] {
+    width: 40px; /* Increased checkbox size */
+    height: 40px; /* Increased checkbox size */
+}
+
+.submit {
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+    padding: 15px;
+    background: yellow;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 10px;
+    font-weight: bold;
+}
