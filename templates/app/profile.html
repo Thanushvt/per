@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+</head>
+<body>
+
+    <div class="navbar">
+        <span class="profile-title">Profile</span>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">About Us</a>
+            <a href="#">Courses</a>
+            <a href="#" class="logout">Log Out</a>
+        </div>
+    </div>
+
+    <div class="profile-container">
+        <div class="row">
+            <div class="input-group">
+                <label>First Name</label>
+                <input type="text">
+            </div>
+            <div class="input-group">
+                <label>Last Name</label>
+                <input type="text">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="input-group">
+                <label>Gender</label>
+                <div class="gender-options">
+                    <label><input type="radio" name="gender" id="male"> Male</label><br>
+                    <label><input type="radio" name="gender" id="female"> Female</label>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Gmail</label>
+                <input type="email">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="input-group">
+                <label>Selected AOI</label>
+                <select>
+                    <option>Computers</option>
+                    <option>Electronics</option>
+                    <option>Mechanical</option>
+                    <option>Civil</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Selected Degree</label>
+                <select>
+                    <option>Btech</option>
+                    <option>Mtech</option>
+                    <option>BSc</option>
+                    <option>MSc</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Selected Branch</label>
+                <select>
+                    <option>CSE</option>
+                    <option>ECE</option>
+                    <option>EEE</option>
+                    <option>IT</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="save-btn">Save</button>
+    </div>
+
+</body>
+</html>

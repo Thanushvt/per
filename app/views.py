@@ -94,3 +94,5 @@ def info(request):
         return redirect("home")
 
     return render(request, "app/info.html")
+def profile(request):
+    return render(request, "app/profile.html")

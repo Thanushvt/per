@@ -1,0 +1,109 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url("/static/pro.jpg");
+    background-size: cover;
+    background-position: center;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.1);
+    padding: 10px 20px;
+}
+
+.profile-title {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.nav-links a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: black;
+    font-size: 20px;
+}
+
+.nav-links .logout {
+    background: red;
+    padding: 8px 15px;
+    color: white;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+.profile-container {
+    width: 60%;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 30px;
+    border-radius: 10px;
+    margin: 40px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 50px;
+}
+
+.gender-options {
+    display: flex; /* This will place the radio buttons and labels in a row */
+    align-items: center; /* This vertically aligns the radio buttons and their labels */
+    gap: 20px; /* Adds space between the radio buttons */
+}
+
+.gender-options label {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.input-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 18px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: rgba(200, 200, 200, 0.8);
+    font-size: 16px;
+}
+
+
+
+
+.save-btn {
+    width: 150px;
+    padding: 12px;
+    background: gray;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+.save-btn:hover {
+    background: darkgray;
+}
