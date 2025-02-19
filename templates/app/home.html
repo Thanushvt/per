@@ -12,8 +12,10 @@
     <header>
         <div class="profile-section">
             {% load static %}
-            <img src="{% if profile_picture %}{{ profile_picture }}{% else %}{% static 'images/default-profile.png' %}{% endif %}" alt="Profile Picture" class="profile-pic">
-            
+            <a href="{% url 'profile' %}">
+                <img src="{% if profile_picture %}{{ profile_picture }}{% else %}{% static 'images/default-profile.png' %}{% endif %}" 
+                     alt="Profile Picture" class="profile-pic">
+            </a>
             <div class="welcome">
                 Welcome, <span id="username">{{ user.first_name|default:user.username }}</span>
             </div>
