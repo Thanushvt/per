@@ -22,74 +22,75 @@
         </div>
     </div>
 
-    <div class="profile-container">
-        <div class="profile-pic-container">
-            <img src="{{ profile_picture }}" alt="Profile Picture" id="profile-pic">
-
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="profile-container">
+            <div class="profile-pic-container">
+                <img src="{{ profile_picture }}" alt="Profile Picture" id="profile-pic">
                 <input type="file" name="profile_picture" accept="image/*" id="upload-pic">
-                <button type="submit">Upload</button>
-            </form>
-        </div>
-
-        <div class="row">
-            <div class="input-group">
-                <label>First Name</label>
-                <input type="text">
             </div>
-            <div class="input-group">
-                <label>Last Name</label>
-                <input type="text">
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="input-group">
-                <label>Gender</label>
-                <div class="gender-options">
-                    <label><input type="radio" name="gender"> Male</label>
-                    <label><input type="radio" name="gender"> Female</label>
+            <!-- First Name & Last Name -->
+            <div class="row">
+                <div class="input-group">
+                    <label>First Name</label>
+                    <input type="text" name="first_name" value="{{ profile.first_name|default:'' }}">
+                </div>
+                <div class="input-group">
+                    <label>Last Name</label>
+                    <input type="text" name="last_name" value="{{ profile.last_name|default:'' }}">
                 </div>
             </div>
-            <div class="input-group">
-                <label>Gmail</label>
-                <input type="email">
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="input-group">
-                <label>Selected AOI</label>
-                <select>
-                    <option>Computers</option>
-                    <option>Electronics</option>
-                    <option>Mechanical</option>
-                    <option>Civil</option>
-                </select>
+            <!-- Gender & Email -->
+            <div class="row">
+                <div class="input-group">
+                    <label>Gender</label>
+                    <div class="gender-options">
+                        <label><input type="radio" name="gender" value="Male" {% if profile.gender == 'Male' %}checked{% endif %}> Male</label>
+                        <label><input type="radio" name="gender" value="Female" {% if profile.gender == 'Female' %}checked{% endif %}> Female</label>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Gmail</label>
+                    <input type="email" name="google_email" value="{{ profile.google_email|default:'' }}">
+                </div>
             </div>
-            <div class="input-group">
-                <label>Selected Degree</label>
-                <select>
-                    <option>Btech</option>
-                    <option>Mtech</option>
-                    <option>BSc</option>
-                    <option>MSc</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label>Selected Branch</label>
-                <select>
-                    <option>CSE</option>
-                    <option>ECE</option>
-                    <option>EEE</option>
-                    <option>IT</option>
-                </select>
-            </div>
-        </div>
 
-        <button class="save-btn">Save</button>
-    </div>
+            <!-- AOI, Degree, Branch -->
+            <div class="row">
+                <div class="input-group">
+                    <label>Selected AOI</label>
+                    <select name="selected_aoi">
+                        <option value="Computers" {% if profile.selected_aoi == "Computers" %}selected{% endif %}>Computers</option>
+                        <option value="Electronics" {% if profile.selected_aoi == "Electronics" %}selected{% endif %}>Electronics</option>
+                        <option value="Mechanical" {% if profile.selected_aoi == "Mechanical" %}selected{% endif %}>Mechanical</option>
+                        <option value="Civil" {% if profile.selected_aoi == "Civil" %}selected{% endif %}>Civil</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Selected Degree</label>
+                    <select name="selected_degree">
+                        <option value="Btech" {% if profile.selected_degree == "Btech" %}selected{% endif %}>Btech</option>
+                        <option value="Mtech" {% if profile.selected_degree == "Mtech" %}selected{% endif %}>Mtech</option>
+                        <option value="BSc" {% if profile.selected_degree == "BSc" %}selected{% endif %}>BSc</option>
+                        <option value="MSc" {% if profile.selected_degree == "MSc" %}selected{% endif %}>MSc</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Selected Branch</label>
+                    <select name="selected_branch">
+                        <option value="CSE" {% if profile.selected_branch == "CSE" %}selected{% endif %}>CSE</option>
+                        <option value="ECE" {% if profile.selected_branch == "ECE" %}selected{% endif %}>ECE</option>
+                        <option value="EEE" {% if profile.selected_branch == "EEE" %}selected{% endif %}>EEE</option>
+                        <option value="IT" {% if profile.selected_branch == "IT" %}selected{% endif %}>IT</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="save-btn">Save</button>
+        </div>
+    </form>
 
     <script>
         document.getElementById('upload-pic').addEventListener('change', function(event) {
