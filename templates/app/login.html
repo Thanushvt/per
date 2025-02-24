@@ -9,6 +9,17 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        /* Styling for error messages */
+        .error-message {
+            background-color: #ffdddd;
+            color: #d8000c;
+            padding: 10px;
+            border-left: 5px solid #d8000c;
+            margin-bottom: 10px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
@@ -19,9 +30,6 @@
                 <label for="click" class="menu-btn">
                     <i class="material-icons">menu</i>
                 </label>
-                <ul>
-                    <li><a href="#">About</a></li>
-                </ul>
             </div>
         </div>
     </nav>
@@ -43,6 +51,14 @@
                                 <div class="card-front">
                                     <div class="center-wrap">
                                         <h4 class="heading">Log In</h4>
+
+                                        <!-- ERROR MESSAGE DISPLAY -->
+                                        {% if messages %}
+                                            {% for message in messages %}
+                                                <div class="error-message" id="error-msg">{{ message }}</div>
+                                            {% endfor %}
+                                        {% endif %}
+
                                         <form method="POST" action="{% url 'login' %}">
                                             {% csrf_token %}
                                             <div class="form-group">
@@ -56,7 +72,7 @@
                                             <button type="submit" class="btn">Login</button>
                                         </form>
                                         <p class="text-center">
-                                            <a href="#" class="link">Forgot your password?</a>
+                                            <a href="{% url 'account_reset_password' %}" class="link">Forgot your password?</a>
                                         </p>
                                         <!-- Social Login -->
                                         <div class="social-icons">
@@ -89,7 +105,7 @@
                                             </div>
                                             <button type="submit" class="btn">Sign Up</button>
                                         </form>
-                                        <!-- Social Login (Fixed) -->
+                                        <!-- Social Login -->
                                         <div class="social-icons">
                                             <a href="{% provider_login_url 'google' %}"><i class="bx bxl-google"></i></a>
                                             <a href="{% provider_login_url 'github' %}"><i class="bx bxl-github"></i></a>
@@ -103,6 +119,20 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Display the error message if it exists
+        document.addEventListener("DOMContentLoaded", function () {
+            let errorMessage = document.getElementById("error-msg");
+            if (errorMessage) {
+                errorMessage.style.display = "block";
+                // Hide the message after 5 seconds
+                setTimeout(() => {
+                    errorMessage.style.display = "none";
+                }, 5000);
+            }
+        });
+    </script>
 
 </body>
 </html>

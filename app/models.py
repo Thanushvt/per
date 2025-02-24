@@ -34,6 +34,8 @@ class UserSelection(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     selected_courses = models.TextField(blank=True, null=True)
     selected_interests = models.TextField(blank=True, null=True)
+    selected_time_periods = models.TextField(blank=True, null=True)  # Add this field
 
+    
     def __str__(self):
         return f"{self.user.username}'s Selections"

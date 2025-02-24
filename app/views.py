@@ -115,14 +115,27 @@ def home(request):
 @login_required
 def info(request):
     if request.method == "POST":
-        selected_courses = request.POST.getlist("courses")
-        selected_interests = request.POST.getlist("interests")
+        selected_courses = request.POST.getlist("courses")  # Checkbox selections
+        custom_course = request.POST.get("custom_course", "").strip()  # Manual input
+        
+        selected_interests = request.POST.getlist("interests")  # Checkbox selections
+        custom_interest = request.POST.get("custom_interest", "").strip()  # Manual input
 
+        selected_time_periods = request.POST.getlist("time_period")  # Checkbox selections
+
+        # Add manually entered inputs if not empty
+        if custom_course:
+            selected_courses.append(custom_course)
+        if custom_interest:
+            selected_interests.append(custom_interest)
+
+        # Store in the database
         UserSelection.objects.update_or_create(
             user=request.user,
             defaults={
                 "selected_courses": ",".join(selected_courses),
                 "selected_interests": ",".join(selected_interests),
+                "selected_time_periods": ",".join(selected_time_periods),  # Store time period
             }
         )
 
@@ -130,6 +143,7 @@ def info(request):
         return redirect("home")
 
     return render(request, "app/info.html")
+
 
 
 @login_required
