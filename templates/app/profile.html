@@ -13,8 +13,7 @@
         <span class="profile-title">Profile</span>
         <div class="nav-links">
             <a href="{% url 'home' %}">Home</a>
-            <a href="#">About Us</a>
-            <a href="#">Courses</a>
+            <a href="{% url 'about' %}">About Us</a>
             <form action="{% url 'logout' %}" method="post" class="logout-btn">
                 {% csrf_token %}
                 <button type="submit" class="logout-btn">Logout</button>

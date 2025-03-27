@@ -1,0 +1,110 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom right, #b3e5fc, #e1bee7); /* Blue-to-light-purple gradient */
+    min-height: 100vh; /* Ensures the background covers the full viewport height */
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #333;
+}
+
+nav div {
+    color: #fff;
+    font-size: 18px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+nav a:hover {
+    color: #00ddeb;
+}
+
+.content {
+    min-height: calc(100vh - 60px); /* Full height minus nav height (adjust if nav height changes) */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.content h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.education-box {
+    background-color: #ffffff; /* White background for the box */
+    border: 2px solid #388e3c; /* Green border to match the agricultural theme */
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px;
+    width: 80%; /* Adjust width as needed */
+    max-width: 800px; /* Limit the maximum width */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.education-box p {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+}
+
+.education-box h2 {
+    font-size: 18px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #92b506; /* Green heading */
+}
+
+.education-box ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.education-box ul li {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.education-box hr {
+    border: 0;
+    border-top: 1px solid #ddd;
+    margin: 10px 0;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end; /* Align button to the right */
+    margin-top: 20px; /* Space above the button */
+}
+
+.action-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.back-btn {
+    background-color: #007bff; /* Blue for Back to Role */
+    color: #fff;
+}
+
+.back-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}

@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ role.role|default:"Job Details" }}</title>
+    <link rel="stylesheet" href="{% static 'css/job.css' %}"> <!-- Updated to job.css -->
+</head>
+<body>
+    <nav>
+        <div>About your job</div> <!-- Keeping the updated text -->
+        <div>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'about' %}">About Us</a>
+            <a href="{% url 'logout' %}" style="background-color: red; color: #fff; padding: 5px 15px; border-radius: 5px;">Logout</a>
+        </div>
+    </nav>
+
+    <div class="content">
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% else %}
+            <h1>{{ role.role|default:"Job Details" }}</h1> <!-- Keeping the updated text -->
+            {% if matters %}
+                <div class="matter-box"> <!-- Added a box for the matter content -->
+                    {% for matter in matters %}
+                        <p>{{ matter.matter|default:"No content available" }}</p>
+                    {% endfor %}
+                    
+                    <h3>YouTube Links</h3>
+                    <ul>
+                        {% for link in youtube_links %}
+                            <li><a href="{{ link }}" target="_blank">{{ link }}</a></li>
+                        {% empty %}
+                            <li>No YouTube links available.</li>
+                        {% endfor %}
+                    </ul>
+
+                    <!-- Buttons placed side by side -->
+                    <div class="button-container">
+                        <form method="post" action="{% url 'education' %}" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="role_id" value="{{ role.roleid }}">
+                            <button type="submit" class="action-btn education-btn">View Education</button>
+                        </form>
+                        <a href="{% url 'role' %}" class="action-btn back-btn">Back to Roles</a>
+                    </div>
+                </div>
+            {% else %}
+                <p>No matter available for this role.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>

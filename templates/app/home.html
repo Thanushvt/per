@@ -22,9 +22,8 @@
         </div>
         <nav>
             <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Courses</a></li>
+                <li><a href="{% url 'home' %}" class="active">Home</a></li>
+                <li><a href="{% url 'about' %}">About Us</a></li>
                 <li>
                     <form action="{% url 'logout' %}" method="post" class="logout-btn">
                         {% csrf_token %}

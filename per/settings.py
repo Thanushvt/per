@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-SITE_ID = 2
+SITE_ID = 1
 
 # Application definition
 
@@ -85,7 +85,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'personalized',
         'USER': 'root',
-        'PASSWORD': '0000',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -135,3 +135,8 @@ LOGIN_REDIRECT_URL = '/home'
 LOGOUT_REDIRECT_URL = reverse_lazy('admin:login')  # Admins go to /admin/login
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'  # Normal users go to home (or change to /login/)
 
+# settings.py
+
+# Media settings for uploaded files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

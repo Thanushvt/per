@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ role.role|default:"Education Details" }}</title>
+    <link rel="stylesheet" href="{% static 'css/education.css' %}">
+</head>
+<body>
+    <nav>
+        <div>Education Data</div>
+        <div>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'about' %}">About Us</a>
+            <a href="{% url 'logout' %}" style="background-color: red; color: #fff; padding: 5px 15px; border-radius: 5px;">Logout</a>
+        </div>
+    </nav>
+
+    <div class="content">
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% else %}
+            <h1>Education for {{ role.role|default:"Education Details" }}</h1>
+            <div class="education-box">
+                {% if selected_time_period %}
+                    <p><strong>Your Selected Time Period:</strong> {{ selected_time_period }}</p>
+                {% else %}
+                    <p><strong>No time period selected. Showing all education options.</strong></p>
+                {% endif %}
+
+                {% if education_data %}
+                    <h2>Education Options</h2>
+                    <ul>
+                    {% for entry in education_data %}
+                        <li>
+                            <strong>Time Period:</strong> {{ entry.timeperiod|default:"Not specified" }}<br>
+                            <strong>Details:</strong> {{ entry.educationmatter|default:"No details available" }}
+                        </li>
+                        <hr>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No education data available for this role.</p>
+                {% endif %}
+
+                <!-- Updated button text and URL -->
+                <div class="button-container">
+                    <a href="{% url 'role' %}" class="action-btn back-btn">Back to Role</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
