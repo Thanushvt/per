@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 from django.views.generic import RedirectView
 
@@ -17,5 +17,8 @@ urlpatterns = [
     path('education/', views.education, name='education'),
     path('about/', views.about_us, name='about'),
     path('', RedirectView.as_view(url='/info/', permanent=False)),
-    path('job/<int:id>/', views.job_detail, name='job_detail'), 
+    path('job/<int:id>/', views.job_detail, name='job_detail'),
+    path("accounts/password/reset/", views.CustomPasswordResetView.as_view(), name="password_reset"),
+    path("accounts/verify-otp/", views.verify_otp, name="verify_otp"),
+    path("accounts/", include("allauth.urls")),
 ]

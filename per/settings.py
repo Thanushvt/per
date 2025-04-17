@@ -59,6 +59,25 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
 ]
 
+# Gmail email settings
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"  # Change to "django.core.mail.backends.console.EmailBackend" for testing
+EMAIL_HOST = "smtp.gmail.com"  # Gmail SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "perprojectnoreply@gmail.com"  # Your Gmail address
+EMAIL_HOST_PASSWORD = "xgwe wbgv ouvx lkut"  # Replace with Gmail app-specific password
+DEFAULT_FROM_EMAIL = "perprojectnoreply@gmail.com"
+
+# Allauth settings
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_SIGNUP = True
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 ROOT_URLCONF = 'per.urls'
 
 TEMPLATES = [
@@ -140,3 +159,6 @@ ACCOUNT_LOGOUT_REDIRECT_URL = '/'  # Normal users go to home (or change to /logi
 # Media settings for uploaded files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
+

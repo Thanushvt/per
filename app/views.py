@@ -1,11 +1,118 @@
+from django import forms
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
+import pyotp
+from smtplib import SMTPException, SMTPAuthenticationError
+import socket
+from allauth.account.views import PasswordResetView
 from allauth.socialaccount.models import SocialAccount
 from .models import Profile, UserSelection, Interest, Category, Roles, Matter, Youtube, Education
 
+# Custom Password Reset Form for OTP
+class CustomPasswordResetForm(forms.Form):
+    email = forms.EmailField(label="Email", max_length=254)
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        users = User.objects.filter(email=email)
+        if not users.exists():
+            raise forms.ValidationError("No account found with this email.")
+        if users.count() > 1:
+            raise forms.ValidationError("Multiple accounts found with this email. Please contact support.")
+        user = users.first()
+        if not hasattr(user, 'profile'):
+            raise forms.ValidationError("No profile associated with this email.")
+        return email
+
+    def save(self, request):
+        email = self.cleaned_data["email"]
+        users = User.objects.filter(email=email)
+        if users.count() != 1:
+            raise forms.ValidationError("Unexpected error: Invalid user count.")
+        user = users.first()
+
+        totp = pyotp.TOTP(pyotp.random_base32(), interval=300)
+        otp = totp.now()
+
+        request.session['reset_email'] = email
+        request.session['otp'] = otp
+        request.session['otp_secret'] = totp.secret
+        request.session.save()
+
+        subject = "Password Reset OTP"
+        message = f"Your OTP for password reset is: {otp}. It is valid for 5 minutes."
+        from_email = settings.DEFAULT_FROM_EMAIL
+        try:
+            send_mail(
+                subject,
+                message,
+                from_email,
+                [email],
+                fail_silently=False,
+            )
+        except socket.gaierror:
+            raise forms.ValidationError("Failed to send OTP email: DNS resolution error. Please check your network or try again later.")
+        except SMTPAuthenticationError:
+            raise forms.ValidationError("Failed to send OTP email: Invalid Gmail credentials. Please check your app-specific password.")
+        except SMTPException as e:
+            raise forms.ValidationError(f"Failed to send OTP email: {str(e)}. Please try again later.")
+
+        return email
+
+# Custom Password Reset View
+class CustomPasswordResetView(PasswordResetView):
+    form_class = CustomPasswordResetForm
+
+    def form_valid(self, form):
+        form.save(self.request)
+        return redirect("verify_otp")
+
+# OTP Verification View
+def verify_otp(request):
+    if request.method == "POST":
+        otp = request.POST.get("otp")
+        new_password = request.POST.get("new_password")
+        confirm_password = request.POST.get("confirm_password")
+
+        email = request.session.get("reset_email")
+        stored_otp_secret = request.session.get("otp_secret")
+
+        if not email or not stored_otp_secret:
+            messages.error(request, "Session expired. Please try again.")
+            return redirect("password_reset")
+
+        totp = pyotp.TOTP(stored_otp_secret, interval=300)
+        if totp.verify(otp):
+            if new_password == confirm_password:
+                try:
+                    users = User.objects.filter(email=email)
+                    if users.count() != 1:
+                        messages.error(request, "Multiple accounts found. Please contact support.")
+                        return redirect("password_reset")
+                    user = users.first()
+                    user.set_password(new_password)
+                    user.save()
+                    messages.success(request, "Password reset successfully.")
+                    request.session.pop("reset_email", None)
+                    request.session.pop("otp", None)
+                    request.session.pop("otp_secret", None)
+                    return redirect("login")
+                except User.DoesNotExist:
+                    messages.error(request, "User not found.")
+            else:
+                messages.error(request, "Passwords do not match.")
+        else:
+            messages.error(request, "Invalid or expired OTP.")
+
+    return render(request, "app/verify_otp.html")
+
+# Existing views (unchanged)
 def signup_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -17,6 +124,9 @@ def signup_view(request):
             return redirect("login")
 
         if User.objects.filter(username=username).exists():
+            return redirect("login")
+
+        if User.objects.filter(email=email).exists():
             return redirect("login")
 
         try:
@@ -39,6 +149,46 @@ def signup_view(request):
         return redirect("login")
 
     return render(request, "app/login.html")
+# app/views.py (partial)
+
+
+def verify_otp(request):
+    if request.method == "POST":
+        otp = request.POST.get("otp")
+        new_password = request.POST.get("new_password")
+        confirm_password = request.POST.get("confirm_password")
+
+        email = request.session.get("reset_email")
+        stored_otp_secret = request.session.get("otp_secret")
+
+        if not email or not stored_otp_secret:
+            messages.error(request, "Session expired. Please try again.")
+            return redirect("password_reset")
+
+        totp = pyotp.TOTP(stored_otp_secret, interval=300)
+        if totp.verify(otp):
+            if new_password == confirm_password:
+                try:
+                    users = User.objects.filter(email=email)
+                    if users.count() != 1:
+                        messages.error(request, "Multiple accounts found. Please contact support.")
+                        return redirect("password_reset")
+                    user = users.first()
+                    user.set_password(new_password)
+                    user.save()
+                    messages.success(request, "Password reset successfully.")
+                    request.session.pop("reset_email", None)
+                    request.session.pop("otp", None)
+                    request.session.pop("otp_secret", None)
+                    return redirect("login")
+                except User.DoesNotExist:
+                    messages.error(request, "User not found.")
+            else:
+                messages.error(request, "Passwords do not match.")
+        else:
+            messages.error(request, "Invalid or expired OTP.")
+
+    return render(request, "app/verify_otp.html")
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -117,7 +267,7 @@ def info(request):
             }
         )
 
-        return redirect("role")  # Redirect to role page after submission
+        return redirect("role")
 
     try:
         user_selection = UserSelection.objects.get(user=request.user)
@@ -139,10 +289,8 @@ def role(request):
         user_selection = UserSelection.objects.get(user=request.user)
         selected_interests = user_selection.selected_interests.split(",") if user_selection.selected_interests else []
 
-        # Debug: Print the selected interests
         print("User's Selected Interests:", selected_interests)
 
-        # Map user-selected interests to the exact Interest names in the database
         interest_mapping = {
             "tech": "Computers",
             "it": "Computers",
@@ -190,25 +338,22 @@ def role(request):
             "public service": "Govt jobs",
             "govt jobs": "Govt jobs",
         }
-        # Normalize and map interests (case-insensitive)
+
         mapped_interests = [
             interest_mapping.get(interest.strip().lower(), interest.strip())
             for interest in selected_interests if interest.strip()
         ]
         print("Mapped Interests:", mapped_interests)
 
-        # Fetch all Interest records and create a case-insensitive mapping
         interest_name_map = {interest.name.lower(): interest.name for interest in Interest.objects.all()}
         print("Interest Name Map (lowercase to actual):", interest_name_map)
 
-        # Convert mapped interests to their exact database names
         final_interests = [
             interest_name_map.get(interest.lower(), interest)
             for interest in mapped_interests
         ]
         print("Final Interests for Query:", final_interests)
 
-        # Fetch matching interests
         matched_interests = Interest.objects.filter(name__in=final_interests)
         print("Matched Interests:", list(matched_interests.values('interestid', 'name', 'interest')))
 
@@ -220,14 +365,11 @@ def role(request):
                 "error": "No matching interests found in database."
             })
 
-        # Fetch categories linked to matched interests (limit to top 2)
         categories = Category.objects.filter(interest__in=matched_interests)[:2]
         print("Categories:", list(categories.values('categoryid', 'category', 'interest_id')))
 
-        # Fetch roles for each category
         roles_by_category = {}
         for category in categories:
-            # Filter roles by category only, since Roles does not have an interest field
             roles = Roles.objects.filter(category=category).order_by('roleid')
             print(f"Roles for {category.category}:", list(roles.values('roleid', 'role', 'category_id')))
             roles_by_category[category] = roles
@@ -249,39 +391,33 @@ def role(request):
 @login_required
 def job(request):
     if request.method == "POST":
-        role_id = request.POST.get('role_id')  # Get the role_id from the form
+        role_id = request.POST.get('role_id')
         try:
-            # Fetch the role using roleid
             role = Roles.objects.get(roleid=role_id)
             print(f"Fetched role: {role.role} (roleid: {role.roleid})")
 
-            # Fetch all Matter objects related to this role
             matters = role.matters.all()
             print(f"Matters for roleid {role_id}: {list(matters)}")
 
-            # Fetch YouTube links from the Youtube model via Matter objects
             youtube_links = []
             for matter in matters:
                 links = Youtube.objects.filter(matter=matter).values_list('video_url', flat=True)
                 youtube_links.extend(links)
             print(f"YouTube links from Youtube model for roleid {role_id}: {youtube_links}")
 
-            # Also check the youtube field in Matter objects as a fallback
             youtube_links_from_matters = []
             for matter in matters:
                 if matter.youtube:
-                    # Assuming the youtube field might contain a comma-separated list of URLs
                     links = [link.strip() for link in matter.youtube.split(',') if link.strip()]
                     youtube_links_from_matters.extend(links)
             print(f"YouTube links from Matter.youtube for roleid {role_id}: {youtube_links_from_matters}")
 
-            # Combine YouTube links from both sources (remove duplicates)
             all_youtube_links = list(set(youtube_links + youtube_links_from_matters))
             print(f"All YouTube links for roleid {role_id}: {all_youtube_links}")
 
             return render(request, 'app/job.html', {
                 'role': role,
-                'matters': matters,  # Pass the queryset of Matter objects
+                'matters': matters,
                 'youtube_links': all_youtube_links,
             })
         except Roles.DoesNotExist:
@@ -299,25 +435,21 @@ def job_detail(request, id):
 @login_required
 def education(request):
     if request.method == "POST":
-        role_id = request.POST.get('role_id')  # Get the role_id from the form
+        role_id = request.POST.get('role_id')
         try:
-            # Fetch the role using roleid
             role = Roles.objects.get(roleid=role_id)
             print(f"Fetched role: {role.role} (roleid: {role.roleid})")
 
-            # Fetch the user's selected time period from UserSelection
             user_selection = UserSelection.objects.filter(user=request.user).first()
             selected_time_period = user_selection.selected_time_periods if user_selection and user_selection.selected_time_periods else None
             print(f"User's selected time period: {selected_time_period}")
 
-            # Fetch all Matter objects related to this role
             matters = role.matters.all()
             print(f"Matters for roleid {role_id}: {list(matters)}")
 
-            # Fetch Education objects, filtering by the selected time period if available
             education_data = []
             for matter in matters:
-                educations = matter.educations.all()  # Get all educations for the matter
+                educations = matter.educations.all()
                 for education in educations:
                     education_data.append({
                         'matter': matter.matter,
@@ -325,7 +457,6 @@ def education(request):
                         'educationmatter': education.educationmatter,
                     })
 
-            # Filter education data by the selected time period
             filtered_education_data = []
             if selected_time_period:
                 filtered_education_data = [
@@ -334,7 +465,6 @@ def education(request):
                 ]
                 print(f"Filtered education data for time period '{selected_time_period}': {filtered_education_data}")
 
-            # If no education data matches the selected time period, fall back to all education data
             final_education_data = filtered_education_data if filtered_education_data else education_data
             print(f"Final education data for roleid {role_id}: {final_education_data}")
 
@@ -392,7 +522,7 @@ def contact(request):
 
 def faq(request):
     return render(request, "app/faq.html")
-# Add this to your existing views.py
+
 @login_required
 def about_us(request):
     return render(request, "app/aboutus.html")
